@@ -374,7 +374,7 @@
         waitingForApproval = false;
         lastData = null;
         blockedMessage.textContent = data.answer || data.guardrail_reason ||
-            "That request is not about travel, so TripMate did not run.";
+            "That request is not about travel, so TripAgnet did not run.";
         showOnly(blockedBox);
         scrollToResults(blockedBox);
     }
@@ -578,7 +578,7 @@
 
         var title = document.createElement("h1");
         title.className = "pdf-title";
-        title.textContent = "TripMate: " + label + (isDraft ? " (draft)" : "");
+        title.textContent = "TripAgent: " + label + (isDraft ? " (draft)" : "");
         sheet.appendChild(title);
 
         var sub = document.createElement("p");
@@ -605,7 +605,7 @@
         html2pdf()
             .set({
                 margin: 0.5,
-                filename: "tripmate-" + activePanel + (isDraft ? "-draft" : "") + ".pdf",
+                filename: "tripagent-" + activePanel + (isDraft ? "-draft" : "") + ".pdf",
                 image: { type: "jpeg", quality: 0.98 },
                 html2canvas: { scale: 2, useCORS: true, backgroundColor: "#ffffff" },
                 jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
