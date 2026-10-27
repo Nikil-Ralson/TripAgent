@@ -1,0 +1,1122 @@
+/* TripMate: airmail stripes on chart paper.
+   Palette: paper #EDF1F5, ink #0F2236, airmail blue #2B5DB8,
+   airmail red #C93A2B, luggage-tag yellow #F2C94C. */
+
+:root {
+    --paper: #EDF1F5;
+    --sheet: #FFFFFF;
+    --ink: #0F2236;
+    --ink-soft: #4A5B6D;
+    --blue: #2B5DB8;
+    --blue-deep: #1F4793;
+    --red: #C93A2B;
+    --tag: #F2C94C;
+    --rule: #C9D3DE;
+
+    --display: "Barlow Condensed", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+    --text: "Source Serif 4", Georgia, "Times New Roman", serif;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background-color: var(--paper);
+    /* faint chart-paper graticule */
+    background-image:
+        linear-gradient(to right, rgba(15, 34, 54, 0.045) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(15, 34, 54, 0.045) 1px, transparent 1px);
+    background-size: 56px 56px;
+    color: var(--ink);
+    font-family: var(--text);
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+h1, h2, h3, h4,
+button,
+label {
+    font-family: var(--display);
+}
+
+[hidden] {
+    display: none !important;
+}
+
+:focus-visible {
+    outline: 3px solid var(--blue);
+    outline-offset: 3px;
+}
+
+/* ---------- Masthead ---------- */
+
+.masthead {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    width: min(1200px, calc(100% - 32px));
+    margin: 0 auto;
+    padding: 22px 0 18px;
+}
+
+.wordmark {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--ink);
+    text-decoration: none;
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 1.6rem;
+    letter-spacing: 0.01em;
+}
+
+.wordmark svg {
+    color: var(--red);
+}
+
+.server-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    font-family: var(--display);
+    font-weight: 500;
+    font-size: 1.05rem;
+    color: var(--ink-soft);
+}
+
+.status-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--rule);
+}
+
+.server-status.is-up .status-dot { background: #1E8E4E; }
+.server-status.is-down .status-dot { background: var(--red); }
+
+/* ---------- Layout ---------- */
+
+.layout {
+    display: grid;
+    grid-template-columns: minmax(330px, 410px) minmax(0, 1fr);
+    gap: 40px;
+    align-items: start;
+    width: min(1200px, calc(100% - 32px));
+    margin: 0 auto;
+    padding: 12px 0 48px;
+}
+
+.planner {
+    position: sticky;
+    top: 20px;
+}
+
+/* ---------- The ticket (the one memorable thing) ---------- */
+
+.ticket {
+    background: var(--sheet);
+    border: 10px solid transparent;
+    border-image: repeating-linear-gradient(
+        135deg,
+        var(--red) 0 12px,
+        var(--sheet) 12px 20px,
+        var(--blue) 20px 32px,
+        var(--sheet) 32px 40px
+    ) 10;
+    padding: 22px 20px 24px;
+    box-shadow: 0 1px 0 var(--rule);
+}
+
+.ticket h1 {
+    margin: 0 0 10px;
+    font-weight: 700;
+    font-size: clamp(2.5rem, 4.2vw, 3.4rem);
+    line-height: 0.95;
+    letter-spacing: -0.005em;
+}
+
+.lede {
+    margin: 0 0 22px;
+    color: var(--ink-soft);
+    max-width: 36ch;
+}
+
+label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    font-size: 1.15rem;
+}
+
+textarea {
+    display: block;
+    width: 100%;
+    min-height: 150px;
+    resize: vertical;
+    padding: 14px;
+    border: 2px solid var(--ink);
+    border-radius: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--text);
+    font-size: 1.05rem;
+    line-height: 1.55;
+}
+
+textarea::placeholder {
+    color: #6B7B8C;
+}
+
+textarea:focus {
+    outline: 3px solid var(--blue);
+    outline-offset: 2px;
+    background: var(--sheet);
+}
+
+#sendBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-top: 12px;
+    padding: 13px 18px 12px;
+    border: 0;
+    border-radius: 0;
+    background: var(--blue);
+    color: #fff;
+    font-weight: 600;
+    font-size: 1.4rem;
+    letter-spacing: 0.01em;
+    cursor: pointer;
+}
+
+#sendBtn:hover {
+    background: var(--blue-deep);
+}
+
+#sendBtn:disabled {
+    background: var(--ink-soft);
+    cursor: progress;
+}
+
+.btn-busy::after {
+    content: "";
+    display: inline-block;
+    width: 1.4em;
+    text-align: left;
+    animation: dots 1.2s steps(4, end) infinite;
+}
+
+@keyframes dots {
+    0%   { content: ""; }
+    25%  { content: "."; }
+    50%  { content: ".."; }
+    75%  { content: "..."; }
+}
+
+.hint {
+    margin: 8px 0 0;
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+}
+
+/* Examples */
+
+.examples {
+    margin-top: 22px;
+    padding-top: 16px;
+    border-top: 2px solid var(--ink);
+}
+
+.examples-title {
+    margin: 0 0 4px;
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.15rem;
+}
+
+.examples ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.examples li + li {
+    border-top: 1px solid var(--rule);
+}
+
+.examples button {
+    display: block;
+    width: 100%;
+    padding: 10px 2px;
+    border: 0;
+    background: none;
+    text-align: left;
+    color: var(--ink);
+    cursor: pointer;
+}
+
+.examples button strong {
+    display: block;
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.25rem;
+    line-height: 1.15;
+}
+
+.examples button span {
+    display: block;
+    font-family: var(--text);
+    font-size: 0.92rem;
+    color: var(--ink-soft);
+}
+
+.examples button:hover strong {
+    color: var(--blue);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+/* ---------- Results column ---------- */
+
+.results {
+    min-width: 0;
+}
+
+.empty,
+.loading,
+.error {
+    background: var(--sheet);
+    padding: 28px;
+}
+
+.empty {
+    border: 2px dashed var(--rule);
+    background: transparent;
+}
+
+.empty h2,
+.loading h2,
+.error h2 {
+    margin: 0 0 14px;
+    font-weight: 700;
+    font-size: 2rem;
+    line-height: 1;
+}
+
+.empty dl {
+    margin: 0;
+}
+
+.empty dl > div {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 16px;
+    padding: 12px 0;
+    border-top: 1px solid var(--rule);
+}
+
+.empty dt {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.3rem;
+    line-height: 1.2;
+}
+
+.empty dd {
+    margin: 0;
+    color: var(--ink-soft);
+}
+
+.empty-note {
+    margin: 14px 0 0;
+    padding-top: 14px;
+    border-top: 1px solid var(--rule);
+    font-size: 0.92rem;
+    color: var(--ink-soft);
+}
+
+/* Loading: a plane flying a dashed route */
+
+.loading {
+    border: 1px solid var(--rule);
+}
+
+.loading p {
+    margin: 18px 0 0;
+    color: var(--ink-soft);
+    max-width: 52ch;
+}
+
+.route {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--ink);
+}
+
+.route-end {
+    flex: none;
+    width: 14px;
+    height: 14px;
+    border: 3px solid var(--ink);
+    border-radius: 50%;
+    background: var(--sheet);
+}
+
+.route-line {
+    position: relative;
+    flex: 1;
+    height: 28px;
+    background:
+        repeating-linear-gradient(to right, var(--ink) 0 8px, transparent 8px 16px)
+        center / 100% 2px no-repeat;
+}
+
+.route-plane {
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: var(--red);
+    transform: rotate(26deg);
+    animation: fly 3.2s ease-in-out infinite;
+}
+
+@keyframes fly {
+    0%   { left: 0; }
+    100% { left: calc(100% - 28px); }
+}
+
+/* Error */
+
+.error {
+    border: 1px solid var(--rule);
+    border-left: 8px solid var(--red);
+}
+
+.error p {
+    margin: 0 0 10px;
+    max-width: 62ch;
+    overflow-wrap: anywhere;
+}
+
+.error-hint {
+    color: var(--ink-soft);
+}
+
+.error button {
+    margin-top: 6px;
+    padding: 9px 18px 8px;
+    border: 2px solid var(--ink);
+    background: var(--sheet);
+    color: var(--ink);
+    font-weight: 600;
+    font-size: 1.15rem;
+    cursor: pointer;
+}
+
+.error button:hover {
+    background: var(--ink);
+    color: #fff;
+}
+
+/* ---------- Result sheet ---------- */
+
+.sheet {
+    background: var(--sheet);
+    border: 1px solid var(--rule);
+    border-top: 6px solid var(--ink);
+}
+
+.sheet-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 22px 28px 16px;
+}
+
+.sheet-title {
+    min-width: 0;
+    flex: 1 1 320px;
+}
+
+.sheet-title h2 {
+    margin: 0;
+    font-weight: 700;
+    font-size: clamp(1.6rem, 2.6vw, 2.2rem);
+    line-height: 1.05;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.thread-info {
+    margin: 8px 0 0;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    overflow-wrap: anywhere;
+}
+
+.sheet-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.sheet-actions button {
+    padding: 8px 16px 7px;
+    border: 2px solid var(--ink);
+    background: var(--sheet);
+    color: var(--ink);
+    font-weight: 600;
+    font-size: 1.1rem;
+    cursor: pointer;
+}
+
+.sheet-actions button:hover:not(:disabled) {
+    background: var(--ink);
+    color: #fff;
+}
+
+.sheet-actions button:disabled {
+    opacity: 0.55;
+    cursor: progress;
+}
+
+.sheet-actions .quiet {
+    border-color: transparent;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+/* Tabs */
+
+.tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 22px;
+    padding: 0 28px;
+    border-bottom: 1px solid var(--rule);
+}
+
+.tabs button {
+    margin-bottom: -1px;
+    padding: 10px 2px 8px;
+    border: 0;
+    border-bottom: 4px solid transparent;
+    background: none;
+    color: var(--ink-soft);
+    font-weight: 600;
+    font-size: 1.25rem;
+    cursor: pointer;
+}
+
+.tabs button:hover {
+    color: var(--ink);
+}
+
+.tabs button[aria-selected="true"] {
+    color: var(--ink);
+    border-bottom-color: var(--red);
+}
+
+.panels {
+    padding: 8px 28px 32px;
+}
+
+.panel:focus-visible {
+    outline-offset: 6px;
+}
+
+/* ---------- Reading typography ---------- */
+
+.prose {
+    max-width: 72ch;
+    font-size: 1.06rem;
+    line-height: 1.72;
+    overflow-wrap: break-word;
+}
+
+.prose > :first-child {
+    margin-top: 20px;
+}
+
+.prose h1,
+.prose h2 {
+    margin: 1.7em 0 0.6em;
+    padding-top: 0.45em;
+    border-top: 2px solid var(--ink);
+    font-weight: 700;
+    font-size: 1.9rem;
+    line-height: 1.05;
+}
+
+.prose > h1:first-child,
+.prose > h2:first-child {
+    margin-top: 20px;
+}
+
+.prose h3 {
+    margin: 1.8em 0 0.4em;
+    font-weight: 700;
+    font-size: 1.4rem;
+    line-height: 1.15;
+    color: var(--blue-deep);
+}
+
+.prose h4 {
+    margin: 1.4em 0 0.3em;
+    font-weight: 600;
+    font-size: 1.2rem;
+}
+
+.prose p {
+    margin: 0 0 1em;
+}
+
+.prose ul,
+.prose ol {
+    margin: 0 0 1.1em;
+    padding-left: 1.4em;
+}
+
+.prose li {
+    margin-bottom: 0.4em;
+}
+
+.prose li::marker {
+    color: var(--red);
+}
+
+.prose strong {
+    font-weight: 600;
+}
+
+.prose a {
+    color: var(--blue-deep);
+    text-underline-offset: 3px;
+}
+
+.prose hr {
+    margin: 2em 0;
+    border: 0;
+    border-top: 1px solid var(--rule);
+}
+
+.prose blockquote {
+    margin: 1.2em 0;
+    padding: 10px 16px;
+    border-left: 5px solid var(--tag);
+    background: rgba(242, 201, 76, 0.16);
+}
+
+.prose blockquote p:last-child {
+    margin-bottom: 0;
+}
+
+.prose table {
+    display: block;
+    max-width: 100%;
+    margin: 1.2em 0;
+    overflow-x: auto;
+    border-collapse: collapse;
+    font-size: 0.98rem;
+    line-height: 1.5;
+}
+
+.prose th,
+.prose td {
+    padding: 9px 14px 9px 0;
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid var(--rule);
+}
+
+.prose th {
+    border-bottom: 2px solid var(--ink);
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 1.1rem;
+    white-space: nowrap;
+}
+
+.prose pre {
+    margin: 1em 0;
+    padding: 14px;
+    overflow-x: auto;
+    background: var(--paper);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    white-space: pre-wrap;
+}
+
+.prose code {
+    font-size: 0.9em;
+}
+
+/* Hotel cards (built by script.js) */
+
+.stay-list {
+    margin: 20px 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.stay {
+    padding: 16px 0;
+    border-top: 1px solid var(--rule);
+}
+
+.stay:first-child {
+    border-top: 2px solid var(--ink);
+}
+
+.stay h3 {
+    margin: 0 0 4px;
+    color: var(--ink);
+    font-size: 1.35rem;
+}
+
+.stay h3 a {
+    color: var(--blue-deep);
+}
+
+.stay p {
+    margin: 0 0 6px;
+    color: #2D3F52;
+}
+
+.stay .source {
+    font-size: 0.88rem;
+    color: var(--ink-soft);
+    overflow-wrap: anywhere;
+}
+
+/* ---------- Footer ---------- */
+
+.site-footer {
+    width: min(1200px, calc(100% - 32px));
+    margin: 0 auto;
+    padding: 0 0 36px;
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+}
+
+/* ---------- PDF export sheet (created by script.js) ---------- */
+
+.pdf-sheet {
+    padding: 8px 0;
+    background: #fff;
+    color: #111;
+}
+
+.pdf-sheet h1.pdf-title {
+    margin: 0 0 4px;
+    border: 0;
+    padding: 0;
+    font-family: var(--display);
+    font-size: 2.1rem;
+}
+
+.pdf-sheet .pdf-sub {
+    margin: 0 0 12px;
+    color: #4A5B6D;
+    font-size: 0.9rem;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 920px) {
+    .layout {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 28px;
+    }
+
+    .planner {
+        position: static;
+    }
+
+    .lede {
+        max-width: none;
+    }
+}
+
+@media (max-width: 560px) {
+    .ticket {
+        border-width: 8px;
+        padding: 18px 14px 20px;
+    }
+
+    .empty,
+    .loading,
+    .error {
+        padding: 20px 16px;
+    }
+
+    .empty dl > div {
+        grid-template-columns: 1fr;
+        gap: 2px;
+    }
+
+    .sheet-head {
+        padding: 18px 16px 12px;
+    }
+
+    .tabs {
+        padding: 0 16px;
+        gap: 2px 16px;
+    }
+
+    .panels {
+        padding: 4px 16px 26px;
+    }
+
+    .sheet-actions {
+        width: 100%;
+    }
+
+    .sheet-actions button {
+        flex: 1 1 auto;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .route-plane {
+        animation: none;
+        left: calc(50% - 14px);
+    }
+
+    .btn-busy::after {
+        animation: none;
+        content: "...";
+    }
+}
+
+@media print {
+    body {
+        background: #fff;
+    }
+
+    .masthead,
+    .planner,
+    .site-footer,
+    .sheet-actions,
+    .tabs {
+        display: none !important;
+    }
+
+    .layout {
+        display: block;
+    }
+
+    .sheet {
+        border: 0;
+    }
+}
+
+/* =====================================================================
+   Supervisor flow, approval review, blocked notice
+   ===================================================================== */
+
+.form-note {
+    margin: 10px 0 0;
+    padding: 8px 12px;
+    border-left: 5px solid var(--tag);
+    background: rgba(242, 201, 76, 0.18);
+    font-size: 0.95rem;
+}
+
+.notice {
+    background: var(--sheet);
+    border: 1px solid var(--rule);
+    border-left: 8px solid var(--tag);
+    padding: 28px;
+}
+
+.notice h2 {
+    margin: 0 0 12px;
+    font-weight: 700;
+    font-size: 2rem;
+    line-height: 1;
+}
+
+.notice p {
+    margin: 0 0 10px;
+    max-width: 62ch;
+}
+
+.notice-hint {
+    color: var(--ink-soft);
+}
+
+#content > * + * {
+    margin-top: 20px;
+}
+
+/* How this plan was built: route stops */
+
+.flow {
+    background: var(--sheet);
+    border: 1px solid var(--rule);
+    padding: 20px 28px 22px;
+}
+
+.flow h2 {
+    margin: 0 0 8px;
+    font-weight: 700;
+    font-size: 1.5rem;
+    line-height: 1.1;
+}
+
+.gate {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 6px;
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.gate-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #1E8E4E;
+}
+
+.gate.is-blocked .gate-dot {
+    background: var(--red);
+}
+
+.flow-reasoning {
+    margin: 0 0 16px;
+    max-width: 70ch;
+    color: var(--ink-soft);
+}
+
+.stops {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: stop;
+}
+
+.stop {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-right: 34px;
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.15rem;
+    line-height: 1.1;
+    counter-increment: stop;
+}
+
+.stop::before {
+    content: counter(stop);
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    border: 3px solid var(--ink);
+    border-radius: 50%;
+    background: var(--ink);
+    color: #fff;
+    font-size: 0.8rem;
+}
+
+/* dashed connector to the next stop */
+.stop:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    width: 22px;
+    border-top: 2px dashed var(--ink);
+}
+
+.stop.is-current::before {
+    background: var(--tag);
+    border-color: var(--ink);
+    color: var(--ink);
+}
+
+.stop.is-current {
+    text-decoration: underline;
+    text-decoration-color: var(--red);
+    text-decoration-thickness: 3px;
+    text-underline-offset: 5px;
+}
+
+.stop.is-todo {
+    color: var(--ink-soft);
+}
+
+.stop.is-todo::before {
+    background: var(--sheet);
+    border-color: var(--rule);
+    color: var(--ink-soft);
+}
+
+/* Draft / final state on the sheet */
+
+.sheet-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 12px;
+    margin: 8px 0 0;
+}
+
+.sheet-meta .thread-info {
+    margin: 0;
+}
+
+.state {
+    display: inline-block;
+    padding: 2px 10px 1px;
+    background: var(--tag);
+    color: var(--ink);
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.state.is-final {
+    background: var(--ink);
+    color: #fff;
+}
+
+.draft-note {
+    margin: 0;
+    padding: 10px 28px;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    background: rgba(242, 201, 76, 0.16);
+    font-size: 0.98rem;
+}
+
+.draft-note a {
+    color: var(--blue-deep);
+    text-underline-offset: 3px;
+}
+
+/* Review box */
+
+.review {
+    background: var(--sheet);
+    border: 2px solid var(--ink);
+    border-left-width: 10px;
+    border-left-color: var(--blue);
+    padding: 22px 28px 24px;
+    scroll-margin-top: 20px;
+}
+
+.review h2 {
+    margin: 0 0 6px;
+    font-weight: 700;
+    font-size: 1.8rem;
+    line-height: 1.05;
+}
+
+.review > p {
+    margin: 0 0 14px;
+    max-width: 62ch;
+}
+
+.review textarea {
+    min-height: 100px;
+}
+
+.review-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.review-actions button {
+    padding: 11px 22px 10px;
+    border: 2px solid var(--ink);
+    font-weight: 600;
+    font-size: 1.25rem;
+    cursor: pointer;
+}
+
+.review-actions .primary {
+    background: var(--blue);
+    border-color: var(--blue);
+    color: #fff;
+}
+
+.review-actions .primary:hover:not(:disabled) {
+    background: var(--blue-deep);
+    border-color: var(--blue-deep);
+}
+
+.review-actions .secondary {
+    background: var(--sheet);
+    color: var(--ink);
+}
+
+.review-actions .secondary:hover:not(:disabled) {
+    background: var(--ink);
+    color: #fff;
+}
+
+.review-actions button:disabled {
+    opacity: 0.55;
+    cursor: progress;
+}
+
+.review-note {
+    margin: 12px 0 0;
+    padding: 8px 12px;
+    border-left: 5px solid var(--tag);
+    background: rgba(242, 201, 76, 0.18);
+}
+
+.review-note.is-error {
+    border-left-color: var(--red);
+    background: rgba(201, 58, 43, 0.08);
+}
+
+@media (max-width: 560px) {
+    .notice,
+    .flow,
+    .review {
+        padding: 18px 16px 20px;
+    }
+
+    .draft-note {
+        padding: 10px 16px;
+    }
+
+    .review-actions button {
+        flex: 1 1 100%;
+    }
+}
