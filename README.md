@@ -2,6 +2,13 @@
 
 TripAgent AI is a travel-planning web application. A visitor describes a trip in the browser; the backend classifies the request, selects relevant research agents, gathers available travel information, drafts a plan, and pauses for the visitor to approve it or request a revision.
 
+## 🚀 Live Demo
+
+**Try TripAgent AI:** [Open the live application](https://tripagent-amii.onrender.com)
+
+Explore the AI-powered travel planner by entering a travel request, reviewing the generated itinerary, and approving it or requesting revisions.
+
+> **Note:** Flight information, weather data, hotel search results, and budget estimates depend on external API availability and configuration. Flight information represents current flight activity, not future schedules or live ticket prices.
 
 ## Features
 
